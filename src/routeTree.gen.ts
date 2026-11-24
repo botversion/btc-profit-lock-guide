@@ -10,15 +10,29 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as DownloadRouteImport } from './routes/download'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as FeaturesRouteImport } from './routes/features'
 import { Route as InstallRouteImport } from './routes/install'
 import { Route as RankingRouteImport } from './routes/ranking'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as ApiPublicDownloadRouteImport } from './routes/api/public/download'
+import { Route as ApiPublicVisitRouteImport } from './routes/api/public/visit'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DownloadRoute = DownloadRouteImport.update({
@@ -46,54 +60,111 @@ const RankingRoute = RankingRouteImport.update({
   path: '/ranking',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const ApiPublicDownloadRoute = ApiPublicDownloadRouteImport.update({
+  id: '/api/public/download',
+  path: '/api/public/download',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicVisitRoute = ApiPublicVisitRouteImport.update({
+  id: '/api/public/visit',
+  path: '/api/public/visit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/download': typeof DownloadRoute
   '/faq': typeof FaqRoute
   '/features': typeof FeaturesRoute
   '/install': typeof InstallRoute
   '/ranking': typeof RankingRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/api/public/download': typeof ApiPublicDownloadRoute
+  '/api/public/visit': typeof ApiPublicVisitRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/download': typeof DownloadRoute
   '/faq': typeof FaqRoute
   '/features': typeof FeaturesRoute
   '/install': typeof InstallRoute
   '/ranking': typeof RankingRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/api/public/download': typeof ApiPublicDownloadRoute
+  '/api/public/visit': typeof ApiPublicVisitRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
   '/download': typeof DownloadRoute
   '/faq': typeof FaqRoute
   '/features': typeof FeaturesRoute
   '/install': typeof InstallRoute
   '/ranking': typeof RankingRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/api/public/download': typeof ApiPublicDownloadRoute
+  '/api/public/visit': typeof ApiPublicVisitRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/download' | '/faq' | '/features' | '/install' | '/ranking'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/download' | '/faq' | '/features' | '/install' | '/ranking'
-  id:
-    | '__root__'
+  fullPaths:
     | '/'
+    | '/auth'
     | '/download'
     | '/faq'
     | '/features'
     | '/install'
     | '/ranking'
+    | '/admin'
+    | '/api/public/download'
+    | '/api/public/visit'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/auth'
+    | '/download'
+    | '/faq'
+    | '/features'
+    | '/install'
+    | '/ranking'
+    | '/admin'
+    | '/api/public/download'
+    | '/api/public/visit'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/download'
+    | '/faq'
+    | '/features'
+    | '/install'
+    | '/ranking'
+    | '/_authenticated/admin'
+    | '/api/public/download'
+    | '/api/public/visit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
   DownloadRoute: typeof DownloadRoute
   FaqRoute: typeof FaqRoute
   FeaturesRoute: typeof FeaturesRoute
   InstallRoute: typeof InstallRoute
   RankingRoute: typeof RankingRoute
+  ApiPublicDownloadRoute: typeof ApiPublicDownloadRoute
+  ApiPublicVisitRoute: typeof ApiPublicVisitRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -103,6 +174,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/download': {
@@ -140,16 +225,52 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RankingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/api/public/download': {
+      id: '/api/public/download'
+      path: '/api/public/download'
+      fullPath: '/api/public/download'
+      preLoaderRoute: typeof ApiPublicDownloadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/visit': {
+      id: '/api/public/visit'
+      path: '/api/public/visit'
+      fullPath: '/api/public/visit'
+      preLoaderRoute: typeof ApiPublicVisitRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
   DownloadRoute: DownloadRoute,
   FaqRoute: FaqRoute,
   FeaturesRoute: FeaturesRoute,
   InstallRoute: InstallRoute,
   RankingRoute: RankingRoute,
+  ApiPublicDownloadRoute: ApiPublicDownloadRoute,
+  ApiPublicVisitRoute: ApiPublicVisitRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

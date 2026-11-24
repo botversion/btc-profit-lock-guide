@@ -1,7 +1,8 @@
 export const BOT_NAME = "BTCBot Weekly Challenge";
 export const BOT_SHORT_NAME = "BTCBot";
 export const SUPPORT_EMAIL = "testing@btcbot.com";
-export const DOWNLOAD_PATH = "/downloads/BTCBot.mq5";
+/** Logs the download, then serves the current bot file (uploaded in the admin dashboard). */
+export const DOWNLOAD_PATH = "/api/public/download";
 export const DOWNLOAD_FILENAME = "BTCBot.mq5";
 /** Ranking server base address (mock until the real server exists). A username lookup opens RANK_BASE + username. */
 export const RANK_BASE = "https://rank.btcbot.com/u/";

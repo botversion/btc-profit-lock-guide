@@ -37,7 +37,10 @@ export function Footer() {
       <div className="border-t border-border">
         <div className="mx-auto flex max-w-6xl flex-col gap-2 px-5 py-5 font-mono text-xs text-muted-foreground sm:flex-row sm:justify-between">
           <span>© {new Date().getFullYear()} BTCBot Weekly Challenge</span>
-          <span>Trading involves risk. Not financial advice.</span>
+          <span className="flex gap-4">
+            <span>Trading involves risk. Not financial advice.</span>
+            <Link to="/admin" className="hover:text-foreground">Admin</Link>
+          </span>
         </div>
       </div>
     </footer>

@@ -34,6 +34,9 @@
   --color-signal-foreground: var(--signal-foreground);
   --color-loss: var(--loss);
   --color-surface: var(--surface);
+  --color-google: var(--google-bg);
+  --color-google-border: var(--google-border);
+  --color-google-foreground: var(--google-fg);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
@@ -58,6 +61,10 @@
 /* Single dark "trading terminal" theme: deep graphite, bitcoin orange, scan green. */
 :root {
   --radius: 0.5rem;
+  /* Google sign-in button, dark theme per Google branding rules */
+  --google-bg: #131314;
+  --google-border: #8e918f;
+  --google-fg: #e3e3e3;
   --background: oklch(0.145 0.008 255);
   --foreground: oklch(0.95 0.008 80);
   --surface: oklch(0.17 0.009 255);
