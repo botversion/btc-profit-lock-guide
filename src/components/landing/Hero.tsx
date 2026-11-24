@@ -1,22 +1,36 @@
-import { BookOpen, Download } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { ArrowRight, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { DOWNLOAD_FILENAME, DOWNLOAD_PATH } from "@/lib/site";
-import { Radar } from "./Radar";
+import { DOWNLOAD_FILENAME, DOWNLOAD_PATH, SIGNAL_MAX, SIGNAL_MIN } from "@/lib/site";
+import { LiveTerminal } from "./LiveTerminal";
+
+const FACTS = [
+  ["Platform", "MetaTrader 5"],
+  ["Symbol", "BTCUSD"],
+  ["Signal score", `${SIGNAL_MIN}–${SIGNAL_MAX}`],
+  ["Stop-loss", "Every trade"],
+];
 
 export function Hero() {
   return (
-    <section id="top" className="relative overflow-hidden bg-hero">
-      <div className="bg-grid pointer-events-none absolute inset-0" />
-      <div className="relative mx-auto grid max-w-6xl items-center gap-16 px-5 pb-24 pt-16 md:pt-24 lg:grid-cols-[1.05fr_1fr]">
+    <section className="relative overflow-hidden border-b border-border bg-hero">
+      <div className="bg-grid pointer-events-none absolute inset-0 opacity-60" />
+      <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-5 pb-20 pt-14 md:pt-20 lg:grid-cols-[0.95fr_1.05fr]">
         <div>
-          <p className="section-eyebrow">MetaTrader 5 · BTCUSD Expert Advisor</p>
-          <h1 className="mt-5 text-4xl font-bold leading-[1.05] sm:text-5xl lg:text-6xl">
-            Scan Bitcoin. <br />
-            Trade with a <span className="text-gradient-primary">stop on every move.</span>
+          <p className="flex items-center gap-3 font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground">
+            <span className="h-px w-8 bg-primary" />
+            MT5 Expert Advisor for BTCUSD
+          </p>
+          <h1 className="mt-6 text-[2.6rem] font-extrabold leading-[0.98] sm:text-6xl lg:text-[3.3rem]">
+            Scan Bitcoin.
+            <br />
+            <span className="text-primary">Trade with a stop</span>
+            <br />
+            on every move.
           </h1>
-          <p className="mt-6 max-w-lg text-lg text-muted-foreground">
-            A disciplined BTCUSD bot that scores each signal, locks in profit, respects your loss limits — and
-            lets you compete on the weekly leaderboard.
+          <p className="mt-6 max-w-md text-lg leading-relaxed text-muted-foreground">
+            The bot rates every setup from {SIGNAL_MIN} to {SIGNAL_MAX}, trades only the strong ones, locks in profit and
+            stops when your loss limit is hit. Then it ranks you on the weekly leaderboard.
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
             <Button asChild variant="hero" size="xl">
@@ -25,27 +39,21 @@ export function Hero() {
               </a>
             </Button>
             <Button asChild variant="terminal" size="xl">
-              <a href="#install">
-                <BookOpen /> Install guide
-              </a>
+              <Link to="/install">
+                Install guide <ArrowRight />
+              </Link>
             </Button>
           </div>
-          <dl className="mt-12 grid max-w-md grid-cols-3 gap-6 border-t border-border pt-6 font-mono text-sm">
-            <div>
-              <dt className="text-muted-foreground">Platform</dt>
-              <dd className="mt-1 text-foreground">MT5</dd>
-            </div>
-            <div>
-              <dt className="text-muted-foreground">Symbol</dt>
-              <dd className="mt-1 text-foreground">BTCUSD</dd>
-            </div>
-            <div>
-              <dt className="text-muted-foreground">Stops</dt>
-              <dd className="mt-1 text-signal">100%</dd>
-            </div>
+          <dl className="mt-12 grid max-w-md grid-cols-2 border-l border-t border-border sm:grid-cols-4">
+            {FACTS.map(([k, val]) => (
+              <div key={k} className="border-b border-r border-border px-3 py-3">
+                <dt className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">{k}</dt>
+                <dd className="mt-1 text-sm font-medium">{val}</dd>
+              </div>
+            ))}
           </dl>
         </div>
-        <Radar />
+        <LiveTerminal />
       </div>
     </section>
   );

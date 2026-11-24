@@ -13,12 +13,9 @@ const FAQ = [
 
 export function Faq() {
   return (
-    <section id="faq" className="border-t border-border bg-surface/40 py-24">
-      <div className="mx-auto grid max-w-6xl gap-12 px-5 lg:grid-cols-[1.4fr_1fr]">
+    <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr]">
         <div>
-          <p className="section-eyebrow">FAQ</p>
-          <h2 className="mt-3 text-3xl font-bold sm:text-4xl">Questions, answered.</h2>
-          <Accordion type="single" collapsible className="mt-8">
+          <Accordion type="single" collapsible className="border-t border-border">
             {FAQ.map((f, i) => (
               <AccordionItem key={f.q} value={`q${i}`} className="border-border">
                 <AccordionTrigger className="py-5 text-base hover:no-underline hover:text-primary">{f.q}</AccordionTrigger>
@@ -29,7 +26,7 @@ export function Faq() {
         </div>
         <aside
           aria-labelledby="risk-title"
-          className="h-fit rounded-xl border border-loss/40 bg-loss/5 p-7 lg:mt-16"
+          className="h-fit rounded-lg border border-loss/40 bg-loss/5 p-7 lg:sticky lg:top-24"
         >
           <div className="flex items-center gap-3 text-loss">
             <AlertTriangle className="h-5 w-5" />
@@ -46,7 +43,6 @@ export function Faq() {
             </p>
           </div>
         </aside>
-      </div>
-    </section>
+    </div>
   );
 }

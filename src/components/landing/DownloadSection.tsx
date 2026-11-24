@@ -13,51 +13,42 @@ const REQUIREMENTS = [
 
 export function DownloadSection() {
   return (
-    <section id="download" className="border-t border-border py-24">
-      <div className="mx-auto grid max-w-6xl gap-12 px-5 lg:grid-cols-[1fr_1.3fr]">
-        <div>
-          <p className="section-eyebrow">Download</p>
-          <h2 className="mt-3 text-3xl font-bold sm:text-4xl">Get the Expert Advisor.</h2>
-          <p className="mt-4 text-muted-foreground">
-            One source file. Drop it into MetaTrader 5, compile, and attach it to a BTCUSD chart.
-          </p>
-          <div className="mt-8 rounded-xl border border-border bg-card p-6 shadow-panel">
-            <div className="flex items-center gap-4">
-              <div className="grid h-12 w-12 place-items-center rounded-lg bg-primary/15 text-primary">
-                <FileCode2 className="h-6 w-6" />
-              </div>
-              <div>
-                <p className="font-mono text-sm">{DOWNLOAD_FILENAME}</p>
-                <p className="text-xs text-muted-foreground">MQL5 source · Expert Advisor</p>
-              </div>
-            </div>
-            <Button asChild variant="hero" size="xl" className="mt-6 w-full">
-              <a href={DOWNLOAD_PATH} download={DOWNLOAD_FILENAME}>
-                <Download /> Download .mq5
-              </a>
-            </Button>
+    <div className="grid gap-10 lg:grid-cols-[1fr_1.35fr]">
+      <div className="h-fit rounded-lg border border-border bg-card">
+        <div className="flex items-center gap-4 border-b border-border p-6">
+          <div className="grid h-12 w-12 place-items-center rounded-md border border-primary/40 text-primary">
+            <FileCode2 className="h-6 w-6" />
+          </div>
+          <div>
+            <p className="font-mono text-sm">{DOWNLOAD_FILENAME}</p>
+            <p className="text-xs text-muted-foreground">MQL5 source · Expert Advisor</p>
           </div>
         </div>
-        <div className="overflow-hidden rounded-xl border border-border">
-          <table className="w-full text-left text-sm">
-            <caption className="sr-only">Requirements</caption>
-            <thead className="bg-surface font-mono text-xs uppercase tracking-wider text-muted-foreground">
-              <tr>
-                <th className="px-5 py-3 font-medium">Requirement</th>
-                <th className="px-5 py-3 font-medium">Details</th>
-              </tr>
-            </thead>
-            <tbody>
-              {REQUIREMENTS.map(([k, v]) => (
-                <tr key={k} className="border-t border-border bg-card">
-                  <td className="px-5 py-4 font-medium">{k}</td>
-                  <td className="px-5 py-4 text-muted-foreground">{v}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="p-6">
+          <Button asChild variant="hero" size="xl" className="w-full">
+            <a href={DOWNLOAD_PATH} download={DOWNLOAD_FILENAME}>
+              <Download /> Download .mq5
+            </a>
+          </Button>
+          <p className="mt-4 text-center text-xs text-muted-foreground">Free download · test on a demo account first</p>
         </div>
       </div>
-    </section>
+      <div>
+        <h2 className="text-xl font-bold">Requirements</h2>
+        <table className="mt-4 w-full border-t border-border text-left text-sm">
+          <caption className="sr-only">Requirements</caption>
+          <tbody>
+            {REQUIREMENTS.map(([k, v]) => (
+              <tr key={k} className="border-b border-border">
+                <th scope="row" className="w-40 py-4 pr-4 align-top font-mono text-xs font-normal uppercase tracking-wider text-muted-foreground">
+                  {k}
+                </th>
+                <td className="py-4">{v}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 }

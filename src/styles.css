@@ -5,9 +5,9 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-display: "Chakra Petch", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --font-display: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -58,10 +58,10 @@
 /* Single dark "trading terminal" theme: deep graphite, bitcoin orange, scan green. */
 :root {
   --radius: 0.5rem;
-  --background: oklch(0.16 0.012 250);
+  --background: oklch(0.145 0.008 255);
   --foreground: oklch(0.95 0.008 80);
-  --surface: oklch(0.19 0.014 250);
-  --card: oklch(0.205 0.014 250);
+  --surface: oklch(0.17 0.009 255);
+  --card: oklch(0.185 0.01 255);
   --card-foreground: oklch(0.95 0.008 80);
   --popover: oklch(0.205 0.014 250);
   --popover-foreground: oklch(0.95 0.008 80);
@@ -79,7 +79,7 @@
   --loss: oklch(0.68 0.19 25);
   --destructive: oklch(0.64 0.2 25);
   --destructive-foreground: oklch(0.97 0.01 25);
-  --border: oklch(0.3 0.014 250);
+  --border: oklch(0.27 0.01 255);
   --input: oklch(0.3 0.014 250);
   --ring: oklch(0.76 0.165 62);
   --chart-1: oklch(0.76 0.165 62);
@@ -98,8 +98,7 @@
 
   --gradient-primary: linear-gradient(135deg, var(--primary), var(--primary-glow));
   --gradient-hero:
-    radial-gradient(60% 50% at 75% 35%, color-mix(in oklab, var(--signal) 10%, transparent), transparent 70%),
-    radial-gradient(50% 40% at 15% 10%, color-mix(in oklab, var(--primary) 12%, transparent), transparent 70%);
+    radial-gradient(45% 40% at 78% 30%, color-mix(in oklab, var(--signal) 6%, transparent), transparent 70%);
   --shadow-glow: 0 0 0 1px color-mix(in oklab, var(--primary) 40%, transparent),
     0 12px 40px -12px color-mix(in oklab, var(--primary) 55%, transparent);
   --shadow-panel: 0 24px 60px -24px oklch(0 0 0 / 0.6);
@@ -120,7 +119,11 @@
   }
   h1, h2, h3, h4 {
     font-family: var(--font-display);
-    letter-spacing: -0.01em;
+    font-stretch: 112%;
+    letter-spacing: -0.025em;
+  }
+  .font-mono {
+    font-variant-numeric: tabular-nums;
   }
   ::selection {
     background: color-mix(in oklab, var(--primary) 40%, transparent);

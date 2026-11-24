@@ -48,28 +48,28 @@ export function Ranking() {
   }
 
   return (
-    <section id="ranking" className="border-t border-border py-24">
-      <div className="mx-auto max-w-6xl px-5">
-        <p className="section-eyebrow">Weekly ranking</p>
-        <h2 className="mt-3 max-w-xl text-3xl font-bold sm:text-4xl">Compete every week.</h2>
-
-        <div className="mt-10 grid gap-4 md:grid-cols-3">
+    <div>
+        <h2 className="text-xl font-bold">How the Rank button works</h2>
+        <ol className="mt-5 grid border-l border-t border-border md:grid-cols-3">
           {HOW.map(({ icon: Icon, title, text }, i) => (
-            <div key={title} className="rounded-xl border border-border bg-card p-6">
-              <div className="flex items-center gap-3">
-                <span className="grid h-9 w-9 place-items-center rounded-md bg-primary/15 text-primary">
-                  <Icon className="h-4 w-4" />
-                </span>
-                <span className="font-mono text-xs text-muted-foreground">STEP {i + 1}</span>
+            <li key={title} className="border-b border-r border-border p-6">
+              <div className="flex items-center justify-between">
+                <Icon className="h-5 w-5 text-primary" />
+                <span className="font-mono text-xs text-muted-foreground">{String(i + 1).padStart(2, "0")}</span>
               </div>
-              <h3 className="mt-4 font-semibold">{title}</h3>
-              <p className="mt-1.5 text-sm text-muted-foreground">{text}</p>
-            </div>
+              <h3 className="mt-5 font-bold">{title}</h3>
+              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{text}</p>
+            </li>
           ))}
+        </ol>
+
+        <div className="mt-14 flex items-baseline justify-between gap-4">
+          <h2 className="text-xl font-bold">This week's leaderboard</h2>
+          <span className="font-mono text-xs text-muted-foreground">Sample data · click a column to sort</span>
         </div>
 
-        <div className="mt-10 grid gap-6 lg:grid-cols-[1.6fr_1fr]">
-          <div className="overflow-x-auto rounded-xl border border-border">
+        <div className="mt-5 grid gap-6 lg:grid-cols-[1.6fr_1fr]">
+          <div className="overflow-x-auto rounded-lg border border-border">
             <table className="w-full min-w-[560px] text-sm">
               <caption className="sr-only">Leaderboard, sortable by column</caption>
               <thead className="bg-surface font-mono text-xs uppercase tracking-wider text-muted-foreground">
@@ -118,7 +118,7 @@ export function Ranking() {
             </table>
           </div>
 
-          <form onSubmit={lookup} className="flex flex-col rounded-xl border border-border bg-card p-6">
+          <form onSubmit={lookup} className="flex h-fit flex-col rounded-lg border border-border bg-card p-6">
             <h3 className="text-lg font-semibold">Look up a trader</h3>
             <p className="mt-1.5 text-sm text-muted-foreground">Opens the trader's ranking page in a new tab.</p>
             <label htmlFor="rank-username" className="mt-6 font-mono text-xs uppercase tracking-wider text-muted-foreground">
@@ -141,7 +141,6 @@ export function Ranking() {
             </Button>
           </form>
         </div>
-      </div>
-    </section>
+    </div>
   );
 }

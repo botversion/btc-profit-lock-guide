@@ -8,6 +8,22 @@ export const RANK_BASE = "https://rank.btcbot.com/u/";
 /** Address users allow in MT5 WebRequest settings so the Rank button can submit. */
 export const RANK_ALLOW_URL = new URL(RANK_BASE).origin;
 
+/** The bot's indicator rates every setup on this scale. */
+export const SIGNAL_MIN = 3;
+export const SIGNAL_MAX = 8;
+/** Lowest signal score the bot opens a trade on. */
+export const SIGNAL_TRADE_MIN = 4;
+
+export const PAGES = [
+  { to: "/features", label: "Features", index: "01", blurb: "Stops, scoring, profit locking, loss limits, dashboard and trade log." },
+  { to: "/download", label: "Download", index: "02", blurb: "Get the .mq5 file and check what you need to run it." },
+  { to: "/install", label: "Install", index: "03", blurb: "Seven steps from MetaTrader 5 to your first scan." },
+  { to: "/ranking", label: "Ranking", index: "04", blurb: "Press Rank, climb the weekly leaderboard, look up any trader." },
+  { to: "/faq", label: "FAQ", index: "05", blurb: "Common questions and the risk notice." },
+] as const;
+
+export type PagePath = (typeof PAGES)[number]["to"];
+
 export function buildRankUrl(username: string, base: string = RANK_BASE): string | null {
   const name = username.trim();
   if (!name) return null;

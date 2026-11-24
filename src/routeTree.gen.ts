@@ -10,33 +10,90 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DownloadRouteImport } from './routes/download'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as FeaturesRouteImport } from './routes/features'
+import { Route as InstallRouteImport } from './routes/install'
+import { Route as RankingRouteImport } from './routes/ranking'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DownloadRoute = DownloadRouteImport.update({
+  id: '/download',
+  path: '/download',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeaturesRoute = FeaturesRouteImport.update({
+  id: '/features',
+  path: '/features',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InstallRoute = InstallRouteImport.update({
+  id: '/install',
+  path: '/install',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RankingRoute = RankingRouteImport.update({
+  id: '/ranking',
+  path: '/ranking',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/download': typeof DownloadRoute
+  '/faq': typeof FaqRoute
+  '/features': typeof FeaturesRoute
+  '/install': typeof InstallRoute
+  '/ranking': typeof RankingRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/download': typeof DownloadRoute
+  '/faq': typeof FaqRoute
+  '/features': typeof FeaturesRoute
+  '/install': typeof InstallRoute
+  '/ranking': typeof RankingRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/download': typeof DownloadRoute
+  '/faq': typeof FaqRoute
+  '/features': typeof FeaturesRoute
+  '/install': typeof InstallRoute
+  '/ranking': typeof RankingRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/download' | '/faq' | '/features' | '/install' | '/ranking'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/download' | '/faq' | '/features' | '/install' | '/ranking'
+  id:
+    | '__root__'
+    | '/'
+    | '/download'
+    | '/faq'
+    | '/features'
+    | '/install'
+    | '/ranking'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DownloadRoute: typeof DownloadRoute
+  FaqRoute: typeof FaqRoute
+  FeaturesRoute: typeof FeaturesRoute
+  InstallRoute: typeof InstallRoute
+  RankingRoute: typeof RankingRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +105,51 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/download': {
+      id: '/download'
+      path: '/download'
+      fullPath: '/download'
+      preLoaderRoute: typeof DownloadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/features': {
+      id: '/features'
+      path: '/features'
+      fullPath: '/features'
+      preLoaderRoute: typeof FeaturesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/install': {
+      id: '/install'
+      path: '/install'
+      fullPath: '/install'
+      preLoaderRoute: typeof InstallRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ranking': {
+      id: '/ranking'
+      path: '/ranking'
+      fullPath: '/ranking'
+      preLoaderRoute: typeof RankingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DownloadRoute: DownloadRoute,
+  FaqRoute: FaqRoute,
+  FeaturesRoute: FeaturesRoute,
+  InstallRoute: InstallRoute,
+  RankingRoute: RankingRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -30,4 +30,5 @@ use the editor.
 <!-- LOVABLE:END -->
 
 ## Project rules
-- Landing page is one scrolling page at `/` built from section components in `src/components/landing/`; bot settings (name, download path, ranking base address, support email) live in `src/lib/site.ts` so they change in one place.
+- Each site section is its own route (`/features`, `/download`, `/install`, `/ranking`, `/faq`) rendering section components from `src/components/landing/` inside the shared header/footer in `__root.tsx`, so each page has its own URL and metadata; the nav list (`PAGES`) and bot settings (name, download path, ranking base address, support email, signal score scale) live in `src/lib/site.ts` so they change in one place.
+- The hero dashboard is a client-side simulation (`src/lib/live-feed.ts`, pure and tested) seeded from a public BTC-USD quote; it starts ticking only after mount to avoid hydration mismatches.
