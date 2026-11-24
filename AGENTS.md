@@ -28,3 +28,6 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+- Landing page is one scrolling page at `/` built from section components in `src/components/landing/`; bot settings (name, download path, ranking base address, support email) live in `src/lib/site.ts` so they change in one place.
