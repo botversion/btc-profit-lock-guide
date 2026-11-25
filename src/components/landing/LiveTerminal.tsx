@@ -63,7 +63,7 @@ export function LiveTerminal() {
     }
     if (s.tick % 8 === 0) {
       const profit = Math.round((0.35 + ((s.tick * 37) % 100) / 100) * 100) / 100;
-      setRows((r): Row[] => [{ id: (r[0]?.id ?? 2746) + 1, t: s.now, side: s.bias === "BUY" ? "BUY" : "SELL", price: s.price, profit }, ...r].slice(0, 5));
+      setRows((r): Row[] => [{ id: (r[0]?.id ?? 2746) + 1, t: s.now, side: (s.bias === "BUY" ? "BUY" : "SELL") as Row["side"], price: s.price, profit }, ...r].slice(0, 5));
       setExtra((e) => ({ trades: e.trades + 1, profit: e.profit + profit }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
