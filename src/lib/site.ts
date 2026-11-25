@@ -1,6 +1,6 @@
 export const BOT_NAME = "BTCBot Weekly Challenge";
 export const BOT_SHORT_NAME = "BTCBot";
-export const SUPPORT_EMAIL = "testing@btcbot.com";
+export const SUPPORT_EMAIL = "xauscalper.version@gmail.com";
 /** Logs the download, then serves the current bot file (uploaded in the admin dashboard). */
 export const DOWNLOAD_PATH = "/api/public/download";
 export const DOWNLOAD_FILENAME = "BTCBot.mq5";
