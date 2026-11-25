@@ -1,143 +1,199 @@
+import { useEffect, useState } from "react";
 import { useLiveFeed } from "@/hooks/use-live-feed";
-import { DAY_LOSS_LIMIT_PCT, fmtPrice, fmtTime, type LogTag } from "@/lib/live-feed";
-import { SIGNAL_MAX, SIGNAL_TRADE_MIN } from "@/lib/site";
+import { fmtPrice } from "@/lib/live-feed";
+import { BOT_NAME, SIGNAL_TRADE_MIN, SUPPORT_EMAIL } from "@/lib/site";
 import { cn } from "@/lib/utils";
-import { Radar } from "./Radar";
-import { ScoreMeter } from "./ScoreMeter";
 
-const TAG_TONE: Record<LogTag, string> = {
-  SCAN: "text-muted-foreground",
-  OPEN: "text-primary",
-  LOCK: "text-signal",
-  CLOSE: "text-foreground",
-};
+/** Marketing preview of the bot's MT5 panel: live BTC price, showcase (profitable) account figures. */
+const DAYS = [
+  { day: 1, net: 182.4, entries: 46, status: "ENDED" },
+  { day: 2, net: 96.1, entries: 38, status: "ENDED" },
+  { day: 3, net: 214.75, entries: 52, status: "ENDED" },
+  { day: 4, net: 0, entries: 0, status: "ACTIVE" },
+  { day: 5, net: 0, entries: 0, status: "UPCOMING" },
+  { day: 6, net: 0, entries: 0, status: "UPCOMING" },
+  { day: 7, net: 0, entries: 0, status: "UPCOMING" },
+];
 
-const signed = (n: number, digits = 2) => `${n >= 0 ? "+" : "−"}${Math.abs(n).toFixed(digits)}`;
+type Row = { id: number; t: number; side: "BUY" | "SELL"; price: number; profit: number };
 
-function Sparkline({ data, entry, stop, up }: { data: number[]; entry?: number | undefined; stop?: number | undefined; up: boolean }) {
-  const W = 320;
-  const H = 72;
-  const vals = [...data, ...(entry ? [entry] : []), ...(stop ? [stop] : [])];
-  const min = Math.min(...vals);
-  const max = Math.max(...vals);
-  const span = max - min || 1;
-  const y = (v: number) => H - 6 - ((v - min) / span) * (H - 12);
-  const x = (i: number) => (i / Math.max(1, data.length - 1)) * W;
-  const pts = data.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
-  const level = (v: number, label: string, cls: string) => (
-    <span className={cn("absolute right-0 -translate-y-1/2 bg-card px-1 text-[9px]", cls)} style={{ top: `${(y(v) / H) * 100}%` }}>
-      {label}
-    </span>
-  );
+const money = (n: number) => `${n >= 0 ? "+" : "−"}$${Math.abs(n).toFixed(2)}`;
+const hm = (t: number) => (t > 0 ? new Date(t).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) : "--:--");
+
+function Box({ title, children, className }: { title: string; children: React.ReactNode; className?: string }) {
   return (
-    <div className="relative mt-3 h-[72px]">
-      <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="h-full w-full" aria-hidden>
-        <polygon points={`0,${H} ${pts} ${W},${H}`} className={up ? "fill-signal/10" : "fill-loss/10"} />
-        {entry && <line x1={0} x2={W} y1={y(entry)} y2={y(entry)} className="stroke-muted-foreground/60" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />}
-        {stop && <line x1={0} x2={W} y1={y(stop)} y2={y(stop)} className="stroke-loss/70" strokeDasharray="2 4" vectorEffect="non-scaling-stroke" />}
-        <polyline points={pts} fill="none" className={up ? "stroke-signal" : "stroke-loss"} strokeWidth={1.5} vectorEffect="non-scaling-stroke" />
-      </svg>
-      {entry && level(entry, "ENTRY", "text-muted-foreground")}
-      {stop && level(stop, "SL", "text-loss")}
-    </div>
+    <section className={cn("rounded-sm border border-border bg-card", className)}>
+      <h4 className="border-b border-border bg-surface px-3 py-1.5 text-[11px] font-semibold text-foreground">
+        <span className="mr-1.5 text-primary">■</span>
+        {title}
+      </h4>
+      <div className="px-3 py-2">{children}</div>
+    </section>
   );
 }
 
-function Stat({ label, value, sub, tone }: { label: string; value: string; sub?: string | undefined; tone?: string | undefined }) {
+function KV({ k, v, tone }: { k: string; v: string; tone?: string }) {
   return (
-    <div className="bg-card px-4 py-3">
-      <dt className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</dt>
-      <dd className={cn("mt-1 text-sm text-foreground", tone)}>{value}</dd>
-      {sub && <dd className="text-[10px] text-muted-foreground">{sub}</dd>}
+    <div className="flex justify-between gap-2 leading-5">
+      <span className="text-muted-foreground">{k}</span>
+      <span className={cn("text-foreground", tone)}>{v}</span>
     </div>
   );
 }
 
 export function LiveTerminal() {
-  const { state: s, view: v } = useLiveFeed();
-  const pos = s.position;
-  const biasTone = s.bias === "BUY" ? "border-signal/50 text-signal" : s.bias === "SELL" ? "border-loss/50 text-loss" : "border-border text-muted-foreground";
+  const { state: s } = useLiveFeed();
+  const [rows, setRows] = useState<Row[]>([]);
+  const [extra, setExtra] = useState({ trades: 0, profit: 0 });
+
+  // Seed and grow a winning trade history once the live price is available.
+  useEffect(() => {
+    if (!s.now) return;
+    if (rows.length === 0) {
+      setRows(
+        Array.from({ length: 5 }, (_, i) => ({
+          id: 2746 - i,
+          t: s.now - (i + 1) * 70000,
+          side: (i % 3 === 1 ? "BUY" : "SELL") as Row["side"],
+          price: s.price + (i - 2) * 18.4,
+          profit: [0.94, 0.61, 1.12, 0.48, 0.87][i] ?? 0.5,
+        })),
+      );
+      return;
+    }
+    if (s.tick % 8 === 0) {
+      const profit = Math.round((0.35 + ((s.tick * 37) % 100) / 100) * 100) / 100;
+      setRows((r) => [{ id: (r[0]?.id ?? 2746) + 1, t: s.now, side: s.bias === "BUY" ? "BUY" : "SELL", price: s.price, profit }, ...r].slice(0, 5));
+      setExtra((e) => ({ trades: e.trades + 1, profit: e.profit + profit }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [s.tick]);
+
+  const today = 64.3 + extra.profit;
+  const week = 493.25 + today;
+  const balance = 10000 + week;
+  const open = Math.abs(((s.price * 7) % 3) - 0.4) + 0.6; // always-green open trade
+  const totalTrades = 2746 + extra.trades;
+  const side = s.bias === "BUY" ? "BUY" : "SELL";
+  const sideTone = side === "BUY" ? "text-signal" : "text-loss";
+  const days = DAYS.map((d) => (d.status === "ACTIVE" ? { ...d, net: today, entries: 21 + extra.trades } : d));
+  const date = s.now ? new Date(s.now) : null;
 
   return (
-    <div className="overflow-hidden rounded-lg border border-border bg-card font-mono text-xs shadow-panel">
-      <div className="flex items-center justify-between border-b border-border bg-surface px-4 py-2.5">
-        <div className="flex items-center gap-3">
-          <span className="flex gap-1.5" aria-hidden>
-            <span className="h-2 w-2 rounded-full bg-muted" />
-            <span className="h-2 w-2 rounded-full bg-muted" />
-            <span className="h-2 w-2 rounded-full bg-muted" />
+    <div className="overflow-hidden rounded-lg border border-border bg-background font-mono text-[11px] shadow-panel">
+      {/* Title bar */}
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border bg-surface px-3 py-2">
+        <span className="font-display text-sm font-bold text-foreground">{BOT_NAME}</span>
+        <div className="flex items-center gap-2">
+          <span className="rounded-sm border border-signal/40 px-2 py-0.5 text-signal">
+            <span className="blink mr-1 inline-block h-1.5 w-1.5 rounded-full bg-signal" />
+            EA ACTIVE
           </span>
-          <span className="text-muted-foreground">BTCBot · BTCUSD · M5</span>
+          <span className="hidden rounded-sm border border-border px-2 py-0.5 text-muted-foreground sm:inline">
+            {date ? date.toLocaleDateString("en-GB", { day: "2-digit", month: "short" }) : "--"}{" "}
+            <span className="text-foreground">{date ? date.toLocaleTimeString("en-GB") : "--:--:--"}</span>
+          </span>
+          <span className="rounded-sm border border-primary/60 px-2 py-0.5 font-semibold text-primary">★ RANK</span>
         </div>
-        <span className="flex items-center gap-3">
-          <span className="flex items-center gap-1.5 text-signal">
-            <span className="blink h-1.5 w-1.5 rounded-full bg-signal" /> LIVE
-          </span>
-          <span className="text-muted-foreground">{fmtTime(s.now)}</span>
+      </div>
+
+      {/* Account strip */}
+      <dl className="grid grid-cols-2 gap-px bg-border sm:grid-cols-4">
+        {[
+          ["Balance", `$${fmtPrice(balance)}`, "text-foreground"],
+          ["Equity", `$${fmtPrice(balance + open)}`, "text-foreground"],
+          ["Open P/L", money(open), "text-signal"],
+          ["Day P/L", `${money(today)} (+${((today / 10000) * 100).toFixed(2)}%)`, "text-signal"],
+        ].map(([k, v, t]) => (
+          <div key={k} className="bg-card px-3 py-2">
+            <dt className="text-[10px] uppercase tracking-wider text-muted-foreground">{k}</dt>
+            <dd className={cn("mt-0.5 text-sm font-medium", t)}>{v}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <div className="flex items-center justify-between border-y border-border bg-primary/10 px-3 py-1 text-primary">
+        <span>PROFIT LOCK ON · SCORE ≥ {SIGNAL_TRADE_MIN}</span>
+        <span className={sideTone}>
+          SIG {side} · {s.score}/8 · Spr {s.spread.toFixed(1)}
         </span>
       </div>
 
-      <div className="grid gap-5 border-b border-border p-4 sm:grid-cols-[148px_1fr]">
-        <div className="mx-auto w-36 sm:w-full">
-          <Radar score={s.score} bias={s.bias} />
-        </div>
-        <div className="min-w-0">
-          <div className="flex items-baseline justify-between gap-3">
-            <span className="text-muted-foreground">BTCUSD · Bid</span>
-            <span className={v.changePct >= 0 ? "text-signal" : "text-loss"}>{signed(v.changePct)}% 24h</span>
-          </div>
-          <p className={cn("mt-1 text-3xl font-medium tracking-tight transition-colors duration-300", v.up ? "text-signal" : "text-loss")}>
-            {fmtPrice(v.bid)}
+      <div className="grid gap-2 p-2 sm:grid-cols-2">
+        <Box title="Current Trade">
+          <p className={cn("text-sm font-semibold", sideTone)}>
+            {side} 0.03 @ {fmtPrice(s.price - (side === "BUY" ? 22 : -22))}
           </p>
-          <div className="mt-2 flex gap-5 text-muted-foreground">
-            <span>
-              Ask <span className="text-foreground">{fmtPrice(v.ask)}</span>
-            </span>
-            <span>
-              Spread <span className="text-foreground">{s.spread.toFixed(1)}</span>
-            </span>
-          </div>
-          <Sparkline data={s.history} entry={pos?.entry} stop={pos?.stop} up={s.price >= (s.history[0] ?? s.price)} />
-        </div>
+          <p className="text-signal">P/L {money(open)} · SL locked</p>
+          <p className="text-muted-foreground">
+            Bid <span className="text-foreground">{fmtPrice(s.price)}</span>
+          </p>
+        </Box>
+        <Box title="Performance">
+          <KV k="Total trades" v={String(totalTrades)} />
+          <KV k="Win rate" v="78.4%" tone="text-signal" />
+          <KV k="Total profit" v={money(1842.6 + week)} tone="text-signal" />
+          <KV k="Profit factor" v="2.31" tone="text-signal" />
+          <KV k="Max drawdown" v="−3.2%" tone="text-loss" />
+        </Box>
+        <Box title="7-Day Challenge" className="sm:col-span-2">
+          <table className="w-full">
+            <thead className="text-muted-foreground">
+              <tr>
+                <th className="text-left font-normal">Day</th>
+                <th className="text-right font-normal">Net P/L</th>
+                <th className="text-right font-normal">Entries</th>
+                <th className="text-right font-normal">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {days.map((d) => (
+                <tr key={d.day} className="leading-5">
+                  <td>{d.day}</td>
+                  <td className={cn("text-right", d.net > 0 ? "text-signal" : "text-muted-foreground")}>{d.net > 0 ? money(d.net) : "0.00"}</td>
+                  <td className="text-right">{d.entries}</td>
+                  <td className={cn("text-right", d.status === "ACTIVE" ? "text-primary" : d.status === "ENDED" ? "text-signal" : "text-muted-foreground")}>
+                    {d.status}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Box>
       </div>
 
-      <div className="border-b border-border p-4">
-        <div className="mb-3 flex items-center justify-between">
-          <span className="text-muted-foreground">Signal score</span>
-          <span className="flex items-center gap-3">
-            <span className={cn("rounded-sm border px-1.5 py-0.5 text-[10px]", biasTone)}>{s.bias}</span>
-            <span className={cn("text-xl font-semibold", v.tradable ? "text-signal" : "text-primary")}>
-              {s.score}
-              <span className="text-sm text-muted-foreground">/{SIGNAL_MAX}</span>
-            </span>
-          </span>
-        </div>
-        <ScoreMeter score={s.score} />
-        <p className="mt-2 text-[10px] text-muted-foreground">
-          {v.tradable ? `Tradable · at or above ${SIGNAL_TRADE_MIN}` : `Watching · trades start at ${SIGNAL_TRADE_MIN}`}
+      <div className="border-t border-border p-2">
+        <p className="mb-1 px-1 font-semibold text-foreground">
+          <span className="mr-1.5 text-primary">■</span>Trade History (latest 5)
         </p>
+        <table className="w-full">
+          <thead className="text-muted-foreground">
+            <tr>
+              <th className="text-left font-normal">#</th>
+              <th className="text-left font-normal">Time</th>
+              <th className="text-left font-normal">Type</th>
+              <th className="text-right font-normal">Price</th>
+              <th className="text-right font-normal">Profit</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr key={r.id} className="leading-5">
+                <td className="text-muted-foreground">{r.id}</td>
+                <td>{hm(r.t)}</td>
+                <td className={r.side === "BUY" ? "text-signal" : "text-loss"}>{r.side}</td>
+                <td className="text-right">{fmtPrice(r.price)}</td>
+                <td className="text-right text-signal">{money(r.profit)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
-      <dl className="grid grid-cols-2 gap-px border-b border-border bg-border sm:grid-cols-4">
-        <Stat label="Position" value={pos ? `${pos.side} ${pos.lots.toFixed(2)}` : "Flat"} sub={pos ? `@ ${fmtPrice(pos.entry)}` : "scanning"} tone={pos ? (pos.side === "BUY" ? "text-signal" : "text-loss") : undefined} />
-        <Stat label="Stop loss" value={pos ? fmtPrice(pos.stop) : "—"} sub={pos ? (pos.locked ? "profit locked" : "initial") : "set on entry"} tone={pos?.locked ? "text-signal" : "text-loss"} />
-        <Stat label="Floating P/L" value={`${signed(v.floatPnl)} $`} tone={v.floatPnl >= 0 ? "text-signal" : "text-loss"} />
-        <Stat label="Week P/L" value={`${signed(v.weekPct)}%`} tone={v.weekPct >= 0 ? "text-signal" : "text-loss"} />
-        <Stat label="Day loss" value={`${v.dayLossPct.toFixed(2)} / ${DAY_LOSS_LIMIT_PCT.toFixed(1)}%`} />
-        <Stat label="Trades today" value={String(s.tradesToday)} />
-        <Stat label="Win rate" value={`${v.winRate.toFixed(1)}%`} sub={`${s.wins}W · ${s.losses}L`} />
-        <Stat label="Balance" value={`$${fmtPrice(s.balance)}`} />
-      </dl>
-
-      <ol className="h-[118px] overflow-hidden px-4 py-3" aria-label="Bot activity log">
-        {s.log.map((e) => (
-          <li key={e.id} className="flex gap-3 truncate leading-[22px]">
-            <span className="text-muted-foreground/70">{fmtTime(e.t)}</span>
-            <span className={cn("w-10 shrink-0", TAG_TONE[e.tag])}>{e.tag}</span>
-            <span className="truncate text-foreground/85">{e.text}</span>
-          </li>
-        ))}
-      </ol>
+      <div className="flex justify-between border-t border-border bg-surface px-3 py-1.5 text-muted-foreground">
+        <span>For Support: {SUPPORT_EMAIL}</span>
+        <span>v7.20</span>
+      </div>
     </div>
   );
 }
