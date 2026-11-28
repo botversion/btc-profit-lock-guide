@@ -1,3 +1,4 @@
+import { useTranslation } from "./LocaleLink";
 import { useEffect, useState } from "react";
 import { useLiveFeed } from "@/hooks/use-live-feed";
 import { fmtPrice } from "@/lib/live-feed";
@@ -21,11 +22,12 @@ const money = (n: number) => `${n >= 0 ? "+" : "−"}$${Math.abs(n).toFixed(2)}`
 const hm = (t: number) => (t > 0 ? new Date(t).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) : "--:--");
 
 function Box({ title, children, className }: { title: string; children: React.ReactNode; className?: string }) {
+  const { t } = useTranslation();
   return (
     <section className={cn("rounded-sm border border-border bg-card", className)}>
       <h4 className="border-b border-border bg-surface px-3 py-1.5 text-[11px] font-semibold text-foreground">
         <span className="mr-1.5 text-primary">■</span>
-        {title}
+        {t(title ?? "")}
       </h4>
       <div className="px-3 py-2">{children}</div>
     </section>
@@ -33,15 +35,17 @@ function Box({ title, children, className }: { title: string; children: React.Re
 }
 
 function KV({ k, v, tone }: { k: string; v: string; tone?: string }) {
+  const { t } = useTranslation();
   return (
     <div className="flex justify-between gap-2 leading-5">
-      <span className="text-muted-foreground">{k}</span>
-      <span className={cn("text-foreground", tone)}>{v}</span>
+      <span className="text-muted-foreground">{t(k ?? "")}</span>
+      <span className={cn("text-foreground", tone)}>{t(v ?? "")}</span>
     </div>
   );
 }
 
 export function LiveTerminal() {
+  const { t } = useTranslation();
   const { state: s } = useLiveFeed();
   const [rows, setRows] = useState<Row[]>([]);
   const [extra, setExtra] = useState({ trades: 0, profit: 0 });
@@ -86,14 +90,12 @@ export function LiveTerminal() {
         <span className="font-display text-sm font-bold text-foreground">{BOT_NAME}</span>
         <div className="flex items-center gap-2">
           <span className="rounded-sm border border-signal/40 px-2 py-0.5 text-signal">
-            <span className="blink mr-1 inline-block h-1.5 w-1.5 rounded-full bg-signal" />
-            EA ACTIVE
-          </span>
+            <span className="blink mr-1 inline-block h-1.5 w-1.5 rounded-full bg-signal" />{t("EA ACTIVE")}</span>
           <span className="hidden rounded-sm border border-border px-2 py-0.5 text-muted-foreground sm:inline">
             {date ? date.toLocaleDateString("en-GB", { day: "2-digit", month: "short" }) : "--"}{" "}
             <span className="text-foreground">{date ? date.toLocaleTimeString("en-GB") : "--:--:--"}</span>
           </span>
-          <span className="rounded-sm border border-primary/60 px-2 py-0.5 font-semibold text-primary">★ RANK</span>
+          <span className="rounded-sm border border-primary/60 px-2 py-0.5 font-semibold text-primary">{t("★ RANK")}</span>
         </div>
       </div>
 
@@ -105,45 +107,43 @@ export function LiveTerminal() {
           ["Open P/L", money(open), "text-signal"],
           ["Day P/L", `${money(today)} (+${((today / 10000) * 100).toFixed(2)}%)`, "text-signal"],
         ].map(([k, v, t]) => (
-          <div key={k} className="bg-card px-3 py-2">
-            <dt className="text-[10px] uppercase tracking-wider text-muted-foreground">{k}</dt>
-            <dd className={cn("mt-0.5 text-sm font-medium", t)}>{v}</dd>
+          <div key={t(k ?? "")} className="bg-card px-3 py-2">
+            <dt className="text-[10px] uppercase tracking-wider text-muted-foreground">{t(k ?? "")}</dt>
+            <dd className={cn("mt-0.5 text-sm font-medium", t)}>{t(v ?? "")}</dd>
           </div>
         ))}
       </dl>
 
       <div className="flex items-center justify-between border-y border-border bg-primary/10 px-3 py-1 text-primary">
-        <span>PROFIT LOCK ON · SCORE ≥ {SIGNAL_TRADE_MIN}</span>
-        <span className={sideTone}>
-          SIG {side} · {s.score}/8 · Spr {s.spread.toFixed(1)}
+        <span>{t("PROFIT LOCK ON · SCORE ≥ ")}{SIGNAL_TRADE_MIN}</span>
+        <span className={sideTone}>{t("SIG")}{t(side ?? "")} · {s.score}{t("/8 · Spr ")}{s.spread.toFixed(1)}
         </span>
       </div>
 
       <div className="grid gap-2 p-2 sm:grid-cols-2">
-        <Box title="Current Trade">
+        <Box title={t("Current Trade")}>
           <p className={cn("text-sm font-semibold", sideTone)}>
-            {side} 0.03 @ {fmtPrice(s.price - (side === "BUY" ? 22 : -22))}
+            {t(side ?? "")} 0.03 @ {fmtPrice(s.price - (side === "BUY" ? 22 : -22))}
           </p>
-          <p className="text-signal">P/L {money(open)} · SL locked</p>
-          <p className="text-muted-foreground">
-            Bid <span className="text-foreground">{fmtPrice(s.price)}</span>
+          <p className="text-signal">{t("P/L ")}{money(open)}{t(" · SL locked")}</p>
+          <p className="text-muted-foreground">{t("Bid")}<span className="text-foreground">{fmtPrice(s.price)}</span>
           </p>
         </Box>
-        <Box title="Performance">
+        <Box title={t("Performance")}>
           <KV k="Total trades" v={String(totalTrades)} />
           <KV k="Win rate" v="78.4%" tone="text-signal" />
           <KV k="Total profit" v={money(1842.6 + week)} tone="text-signal" />
           <KV k="Profit factor" v="2.31" tone="text-signal" />
           <KV k="Max drawdown" v="−3.2%" tone="text-loss" />
         </Box>
-        <Box title="7-Day Challenge" className="sm:col-span-2">
+        <Box title={t("7-Day Challenge")} className="sm:col-span-2">
           <table className="w-full">
             <thead className="text-muted-foreground">
               <tr>
-                <th className="text-left font-normal">Day</th>
-                <th className="text-right font-normal">Net P/L</th>
-                <th className="text-right font-normal">Entries</th>
-                <th className="text-right font-normal">Status</th>
+                <th className="text-left font-normal">{t("Day")}</th>
+                <th className="text-right font-normal">{t("Net P/L")}</th>
+                <th className="text-right font-normal">{t("Entries")}</th>
+                <th className="text-right font-normal">{t("Status")}</th>
               </tr>
             </thead>
             <tbody>
@@ -153,7 +153,7 @@ export function LiveTerminal() {
                   <td className={cn("text-right", d.net > 0 ? "text-signal" : "text-muted-foreground")}>{d.net > 0 ? money(d.net) : "0.00"}</td>
                   <td className="text-right">{d.entries}</td>
                   <td className={cn("text-right", d.status === "ACTIVE" ? "text-primary" : d.status === "ENDED" ? "text-signal" : "text-muted-foreground")}>
-                    {d.status}
+                    {t(d.status ?? "")}
                   </td>
                 </tr>
               ))}
@@ -164,16 +164,15 @@ export function LiveTerminal() {
 
       <div className="border-t border-border p-2">
         <p className="mb-1 px-1 font-semibold text-foreground">
-          <span className="mr-1.5 text-primary">■</span>Trade History (latest 5)
-        </p>
+          <span className="mr-1.5 text-primary">■</span>{t("Trade History (latest 5)")}</p>
         <table className="w-full">
           <thead className="text-muted-foreground">
             <tr>
               <th className="text-left font-normal">#</th>
-              <th className="text-left font-normal">Time</th>
-              <th className="text-left font-normal">Type</th>
-              <th className="text-right font-normal">Price</th>
-              <th className="text-right font-normal">Profit</th>
+              <th className="text-left font-normal">{t("Time")}</th>
+              <th className="text-left font-normal">{t("Type")}</th>
+              <th className="text-right font-normal">{t("Price")}</th>
+              <th className="text-right font-normal">{t("Profit")}</th>
             </tr>
           </thead>
           <tbody>
@@ -181,7 +180,7 @@ export function LiveTerminal() {
               <tr key={r.id} className="leading-5">
                 <td className="text-muted-foreground">{r.id}</td>
                 <td>{hm(r.t)}</td>
-                <td className={r.side === "BUY" ? "text-signal" : "text-loss"}>{r.side}</td>
+                <td className={r.side === "BUY" ? "text-signal" : "text-loss"}>{t(r.side ?? "")}</td>
                 <td className="text-right">{fmtPrice(r.price)}</td>
                 <td className="text-right text-signal">{money(r.profit)}</td>
               </tr>
@@ -192,7 +191,7 @@ export function LiveTerminal() {
 
       <div className="flex justify-between border-t border-border bg-surface px-3 py-1.5 text-muted-foreground">
         <span>For Support: {SUPPORT_EMAIL}</span>
-        <span>v7.20</span>
+        <span>{t("v7.20")}</span>
       </div>
     </div>
   );

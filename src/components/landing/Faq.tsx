@@ -1,3 +1,4 @@
+import { useTranslation } from "./LocaleLink";
 import { AlertTriangle } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { BOT_NAME } from "@/lib/site";
@@ -12,14 +13,15 @@ const FAQ = [
 ];
 
 export function Faq() {
+  const { t } = useTranslation();
   return (
     <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr]">
         <div>
           <Accordion type="single" collapsible className="border-t border-border">
             {FAQ.map((f, i) => (
-              <AccordionItem key={f.q} value={`q${i}`} className="border-border">
-                <AccordionTrigger className="py-5 text-base hover:no-underline hover:text-primary">{f.q}</AccordionTrigger>
-                <AccordionContent className="leading-relaxed text-muted-foreground">{f.a}</AccordionContent>
+              <AccordionItem key={t(f.q ?? "")} value={`q${i}`} className="border-border">
+                <AccordionTrigger className="py-5 text-base hover:no-underline hover:text-primary">{t(f.q ?? "")}</AccordionTrigger>
+                <AccordionContent className="leading-relaxed text-muted-foreground">{t(f.a ?? "")}</AccordionContent>
               </AccordionItem>
             ))}
           </Accordion>
@@ -30,17 +32,12 @@ export function Faq() {
         >
           <div className="flex items-center gap-3 text-loss">
             <AlertTriangle className="h-5 w-5" />
-            <h3 id="risk-title" className="text-lg font-semibold">Risk notice</h3>
+            <h3 id="risk-title" className="text-lg font-semibold">{t("Risk notice")}</h3>
           </div>
           <div className="mt-4 space-y-3 text-sm leading-relaxed text-muted-foreground">
+            <p>{t("Trading Bitcoin and other leveraged products carries a high level of risk and may not be suitable for everyone. You can lose some or all of your capital.")}</p>
             <p>
-              Trading Bitcoin and other leveraged products carries a high level of risk and may not be suitable for
-              everyone. You can lose some or all of your capital.
-            </p>
-            <p>
-              {BOT_NAME} is a tool, not financial advice. Past results and leaderboard figures do not guarantee future
-              performance. Only trade with money you can afford to lose, and test on a demo account first.
-            </p>
+              {BOT_NAME}{t("is a tool, not financial advice. Past results and leaderboard figures do not guarantee future performance. Only trade with money you can afford to lose, and test on a demo account first.")}</p>
           </div>
         </aside>
     </div>

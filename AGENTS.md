@@ -32,3 +32,5 @@ use the editor.
 ## Project rules
 - Each site section is its own route (`/features`, `/download`, `/install`, `/ranking`, `/faq`) rendering section components from `src/components/landing/` inside the shared header/footer in `__root.tsx`, so each page has its own URL and metadata; the nav list (`PAGES`) and bot settings (name, download path, ranking base address, support email, signal score scale) live in `src/lib/site.ts` so they change in one place.
 - The hero dashboard is a client-side simulation (`src/lib/live-feed.ts`, pure and tested) seeded from a public BTC-USD quote; it starts ticking only after mount to avoid hydration mismatches.
+- Public French and German pages use explicit `/fr` and `/de` routes with shared section components; locale-aware links preserve the section and translations render during SSR so navigation and indexed content use the same language.
+- Embed the shared manual using its Google Drive preview URL, with an original-document link; no connector credentials are needed for a public document viewer.

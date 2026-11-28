@@ -1,21 +1,10 @@
+import { pageHead } from "@/lib/page-head";
 import { createFileRoute } from "@tanstack/react-router";
 import { NextPage, PageBody, PageHeader } from "@/components/landing/PageHeader";
 import { Ranking } from "@/components/landing/Ranking";
 
-const TITLE = "Weekly Ranking & Leaderboard — BTCBot Weekly Challenge";
-const DESCRIPTION = "See how the Rank button works, sort the weekly BTCUSD leaderboard and look up any trader by username.";
-
 export const Route = createFileRoute("/ranking")({
-  head: () => ({
-    meta: [
-      { title: TITLE },
-      { name: "description", content: DESCRIPTION },
-      { property: "og:title", content: TITLE },
-      { property: "og:description", content: DESCRIPTION },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: () => pageHead("en", "/ranking"),
   component: RankingPage,
 });
 

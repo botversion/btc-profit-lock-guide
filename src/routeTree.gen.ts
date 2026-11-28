@@ -12,12 +12,27 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as DocumentationRouteImport } from './routes/documentation'
 import { Route as DownloadRouteImport } from './routes/download'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as FeaturesRouteImport } from './routes/features'
 import { Route as InstallRouteImport } from './routes/install'
 import { Route as RankingRouteImport } from './routes/ranking'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as DeIndexRouteImport } from './routes/de.index'
+import { Route as DeDocumentationRouteImport } from './routes/de.documentation'
+import { Route as DeDownloadRouteImport } from './routes/de.download'
+import { Route as DeFaqRouteImport } from './routes/de.faq'
+import { Route as DeFeaturesRouteImport } from './routes/de.features'
+import { Route as DeInstallRouteImport } from './routes/de.install'
+import { Route as DeRankingRouteImport } from './routes/de.ranking'
+import { Route as FrIndexRouteImport } from './routes/fr.index'
+import { Route as FrDocumentationRouteImport } from './routes/fr.documentation'
+import { Route as FrDownloadRouteImport } from './routes/fr.download'
+import { Route as FrFaqRouteImport } from './routes/fr.faq'
+import { Route as FrFeaturesRouteImport } from './routes/fr.features'
+import { Route as FrInstallRouteImport } from './routes/fr.install'
+import { Route as FrRankingRouteImport } from './routes/fr.ranking'
 import { Route as ApiPublicDownloadRouteImport } from './routes/api/public/download'
 import { Route as ApiPublicVisitRouteImport } from './routes/api/public/visit'
 
@@ -33,6 +48,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocumentationRoute = DocumentationRouteImport.update({
+  id: '/documentation',
+  path: '/documentation',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DownloadRoute = DownloadRouteImport.update({
@@ -65,6 +85,76 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const DeIndexRoute = DeIndexRouteImport.update({
+  id: '/de/',
+  path: '/de/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeDocumentationRoute = DeDocumentationRouteImport.update({
+  id: '/de/documentation',
+  path: '/de/documentation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeDownloadRoute = DeDownloadRouteImport.update({
+  id: '/de/download',
+  path: '/de/download',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeFaqRoute = DeFaqRouteImport.update({
+  id: '/de/faq',
+  path: '/de/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeFeaturesRoute = DeFeaturesRouteImport.update({
+  id: '/de/features',
+  path: '/de/features',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeInstallRoute = DeInstallRouteImport.update({
+  id: '/de/install',
+  path: '/de/install',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeRankingRoute = DeRankingRouteImport.update({
+  id: '/de/ranking',
+  path: '/de/ranking',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FrIndexRoute = FrIndexRouteImport.update({
+  id: '/fr/',
+  path: '/fr/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FrDocumentationRoute = FrDocumentationRouteImport.update({
+  id: '/fr/documentation',
+  path: '/fr/documentation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FrDownloadRoute = FrDownloadRouteImport.update({
+  id: '/fr/download',
+  path: '/fr/download',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FrFaqRoute = FrFaqRouteImport.update({
+  id: '/fr/faq',
+  path: '/fr/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FrFeaturesRoute = FrFeaturesRouteImport.update({
+  id: '/fr/features',
+  path: '/fr/features',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FrInstallRoute = FrInstallRouteImport.update({
+  id: '/fr/install',
+  path: '/fr/install',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FrRankingRoute = FrRankingRouteImport.update({
+  id: '/fr/ranking',
+  path: '/fr/ranking',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicDownloadRoute = ApiPublicDownloadRouteImport.update({
   id: '/api/public/download',
   path: '/api/public/download',
@@ -79,24 +169,54 @@ const ApiPublicVisitRoute = ApiPublicVisitRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/documentation': typeof DocumentationRoute
   '/download': typeof DownloadRoute
   '/faq': typeof FaqRoute
   '/features': typeof FeaturesRoute
   '/install': typeof InstallRoute
   '/ranking': typeof RankingRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/de/documentation': typeof DeDocumentationRoute
+  '/de/download': typeof DeDownloadRoute
+  '/de/faq': typeof DeFaqRoute
+  '/de/features': typeof DeFeaturesRoute
+  '/de/install': typeof DeInstallRoute
+  '/de/ranking': typeof DeRankingRoute
+  '/fr/documentation': typeof FrDocumentationRoute
+  '/fr/download': typeof FrDownloadRoute
+  '/fr/faq': typeof FrFaqRoute
+  '/fr/features': typeof FrFeaturesRoute
+  '/fr/install': typeof FrInstallRoute
+  '/fr/ranking': typeof FrRankingRoute
+  '/de/': typeof DeIndexRoute
+  '/fr/': typeof FrIndexRoute
   '/api/public/download': typeof ApiPublicDownloadRoute
   '/api/public/visit': typeof ApiPublicVisitRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/documentation': typeof DocumentationRoute
   '/download': typeof DownloadRoute
   '/faq': typeof FaqRoute
   '/features': typeof FeaturesRoute
   '/install': typeof InstallRoute
   '/ranking': typeof RankingRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/de/documentation': typeof DeDocumentationRoute
+  '/de/download': typeof DeDownloadRoute
+  '/de/faq': typeof DeFaqRoute
+  '/de/features': typeof DeFeaturesRoute
+  '/de/install': typeof DeInstallRoute
+  '/de/ranking': typeof DeRankingRoute
+  '/fr/documentation': typeof FrDocumentationRoute
+  '/fr/download': typeof FrDownloadRoute
+  '/fr/faq': typeof FrFaqRoute
+  '/fr/features': typeof FrFeaturesRoute
+  '/fr/install': typeof FrInstallRoute
+  '/fr/ranking': typeof FrRankingRoute
+  '/de': typeof DeIndexRoute
+  '/fr': typeof FrIndexRoute
   '/api/public/download': typeof ApiPublicDownloadRoute
   '/api/public/visit': typeof ApiPublicVisitRoute
 }
@@ -105,12 +225,27 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/documentation': typeof DocumentationRoute
   '/download': typeof DownloadRoute
   '/faq': typeof FaqRoute
   '/features': typeof FeaturesRoute
   '/install': typeof InstallRoute
   '/ranking': typeof RankingRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/de/documentation': typeof DeDocumentationRoute
+  '/de/download': typeof DeDownloadRoute
+  '/de/faq': typeof DeFaqRoute
+  '/de/features': typeof DeFeaturesRoute
+  '/de/install': typeof DeInstallRoute
+  '/de/ranking': typeof DeRankingRoute
+  '/fr/documentation': typeof FrDocumentationRoute
+  '/fr/download': typeof FrDownloadRoute
+  '/fr/faq': typeof FrFaqRoute
+  '/fr/features': typeof FrFeaturesRoute
+  '/fr/install': typeof FrInstallRoute
+  '/fr/ranking': typeof FrRankingRoute
+  '/de/': typeof DeIndexRoute
+  '/fr/': typeof FrIndexRoute
   '/api/public/download': typeof ApiPublicDownloadRoute
   '/api/public/visit': typeof ApiPublicVisitRoute
 }
@@ -119,24 +254,54 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/documentation'
     | '/download'
     | '/faq'
     | '/features'
     | '/install'
     | '/ranking'
     | '/admin'
+    | '/de/documentation'
+    | '/de/download'
+    | '/de/faq'
+    | '/de/features'
+    | '/de/install'
+    | '/de/ranking'
+    | '/fr/documentation'
+    | '/fr/download'
+    | '/fr/faq'
+    | '/fr/features'
+    | '/fr/install'
+    | '/fr/ranking'
+    | '/de/'
+    | '/fr/'
     | '/api/public/download'
     | '/api/public/visit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
+    | '/documentation'
     | '/download'
     | '/faq'
     | '/features'
     | '/install'
     | '/ranking'
     | '/admin'
+    | '/de/documentation'
+    | '/de/download'
+    | '/de/faq'
+    | '/de/features'
+    | '/de/install'
+    | '/de/ranking'
+    | '/fr/documentation'
+    | '/fr/download'
+    | '/fr/faq'
+    | '/fr/features'
+    | '/fr/install'
+    | '/fr/ranking'
+    | '/de'
+    | '/fr'
     | '/api/public/download'
     | '/api/public/visit'
   id:
@@ -144,12 +309,27 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/documentation'
     | '/download'
     | '/faq'
     | '/features'
     | '/install'
     | '/ranking'
     | '/_authenticated/admin'
+    | '/de/documentation'
+    | '/de/download'
+    | '/de/faq'
+    | '/de/features'
+    | '/de/install'
+    | '/de/ranking'
+    | '/fr/documentation'
+    | '/fr/download'
+    | '/fr/faq'
+    | '/fr/features'
+    | '/fr/install'
+    | '/fr/ranking'
+    | '/de/'
+    | '/fr/'
     | '/api/public/download'
     | '/api/public/visit'
   fileRoutesById: FileRoutesById
@@ -158,11 +338,26 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  DocumentationRoute: typeof DocumentationRoute
   DownloadRoute: typeof DownloadRoute
   FaqRoute: typeof FaqRoute
   FeaturesRoute: typeof FeaturesRoute
   InstallRoute: typeof InstallRoute
   RankingRoute: typeof RankingRoute
+  DeDocumentationRoute: typeof DeDocumentationRoute
+  DeDownloadRoute: typeof DeDownloadRoute
+  DeFaqRoute: typeof DeFaqRoute
+  DeFeaturesRoute: typeof DeFeaturesRoute
+  DeInstallRoute: typeof DeInstallRoute
+  DeRankingRoute: typeof DeRankingRoute
+  FrDocumentationRoute: typeof FrDocumentationRoute
+  FrDownloadRoute: typeof FrDownloadRoute
+  FrFaqRoute: typeof FrFaqRoute
+  FrFeaturesRoute: typeof FrFeaturesRoute
+  FrInstallRoute: typeof FrInstallRoute
+  FrRankingRoute: typeof FrRankingRoute
+  DeIndexRoute: typeof DeIndexRoute
+  FrIndexRoute: typeof FrIndexRoute
   ApiPublicDownloadRoute: typeof ApiPublicDownloadRoute
   ApiPublicVisitRoute: typeof ApiPublicVisitRoute
 }
@@ -188,6 +383,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/documentation': {
+      id: '/documentation'
+      path: '/documentation'
+      fullPath: '/documentation'
+      preLoaderRoute: typeof DocumentationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/download': {
@@ -232,6 +434,104 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/de/': {
+      id: '/de/'
+      path: '/de'
+      fullPath: '/de/'
+      preLoaderRoute: typeof DeIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/de/documentation': {
+      id: '/de/documentation'
+      path: '/de/documentation'
+      fullPath: '/de/documentation'
+      preLoaderRoute: typeof DeDocumentationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/de/download': {
+      id: '/de/download'
+      path: '/de/download'
+      fullPath: '/de/download'
+      preLoaderRoute: typeof DeDownloadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/de/faq': {
+      id: '/de/faq'
+      path: '/de/faq'
+      fullPath: '/de/faq'
+      preLoaderRoute: typeof DeFaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/de/features': {
+      id: '/de/features'
+      path: '/de/features'
+      fullPath: '/de/features'
+      preLoaderRoute: typeof DeFeaturesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/de/install': {
+      id: '/de/install'
+      path: '/de/install'
+      fullPath: '/de/install'
+      preLoaderRoute: typeof DeInstallRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/de/ranking': {
+      id: '/de/ranking'
+      path: '/de/ranking'
+      fullPath: '/de/ranking'
+      preLoaderRoute: typeof DeRankingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fr/': {
+      id: '/fr/'
+      path: '/fr'
+      fullPath: '/fr/'
+      preLoaderRoute: typeof FrIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fr/documentation': {
+      id: '/fr/documentation'
+      path: '/fr/documentation'
+      fullPath: '/fr/documentation'
+      preLoaderRoute: typeof FrDocumentationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fr/download': {
+      id: '/fr/download'
+      path: '/fr/download'
+      fullPath: '/fr/download'
+      preLoaderRoute: typeof FrDownloadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fr/faq': {
+      id: '/fr/faq'
+      path: '/fr/faq'
+      fullPath: '/fr/faq'
+      preLoaderRoute: typeof FrFaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fr/features': {
+      id: '/fr/features'
+      path: '/fr/features'
+      fullPath: '/fr/features'
+      preLoaderRoute: typeof FrFeaturesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fr/install': {
+      id: '/fr/install'
+      path: '/fr/install'
+      fullPath: '/fr/install'
+      preLoaderRoute: typeof FrInstallRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fr/ranking': {
+      id: '/fr/ranking'
+      path: '/fr/ranking'
+      fullPath: '/fr/ranking'
+      preLoaderRoute: typeof FrRankingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/download': {
       id: '/api/public/download'
       path: '/api/public/download'
@@ -264,11 +564,26 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  DocumentationRoute: DocumentationRoute,
   DownloadRoute: DownloadRoute,
   FaqRoute: FaqRoute,
   FeaturesRoute: FeaturesRoute,
   InstallRoute: InstallRoute,
   RankingRoute: RankingRoute,
+  DeDocumentationRoute: DeDocumentationRoute,
+  DeDownloadRoute: DeDownloadRoute,
+  DeFaqRoute: DeFaqRoute,
+  DeFeaturesRoute: DeFeaturesRoute,
+  DeInstallRoute: DeInstallRoute,
+  DeRankingRoute: DeRankingRoute,
+  FrDocumentationRoute: FrDocumentationRoute,
+  FrDownloadRoute: FrDownloadRoute,
+  FrFaqRoute: FrFaqRoute,
+  FrFeaturesRoute: FrFeaturesRoute,
+  FrInstallRoute: FrInstallRoute,
+  FrRankingRoute: FrRankingRoute,
+  DeIndexRoute: DeIndexRoute,
+  FrIndexRoute: FrIndexRoute,
   ApiPublicDownloadRoute: ApiPublicDownloadRoute,
   ApiPublicVisitRoute: ApiPublicVisitRoute,
 }

@@ -1,21 +1,10 @@
+import { pageHead } from "@/lib/page-head";
 import { createFileRoute } from "@tanstack/react-router";
 import { DownloadSection } from "@/components/landing/DownloadSection";
 import { NextPage, PageBody, PageHeader } from "@/components/landing/PageHeader";
 
-const TITLE = "Download the BTCUSD Bot for MT5 — BTCBot Weekly Challenge";
-const DESCRIPTION = "Download the BTCBot .mq5 Expert Advisor for MetaTrader 5 and check the requirements before you install.";
-
 export const Route = createFileRoute("/download")({
-  head: () => ({
-    meta: [
-      { title: TITLE },
-      { name: "description", content: DESCRIPTION },
-      { property: "og:title", content: TITLE },
-      { property: "og:description", content: DESCRIPTION },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: () => pageHead("en", "/download"),
   component: DownloadPage,
 });
 

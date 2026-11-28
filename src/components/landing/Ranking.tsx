@@ -1,3 +1,4 @@
+import { useTranslation } from "./LocaleLink";
 import { useMemo, useState, type FormEvent } from "react";
 import { ArrowDown, ArrowUp, ArrowUpDown, ExternalLink, Search, Send, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,7 @@ const HOW = [
 ];
 
 export function Ranking() {
+  const { t } = useTranslation();
   const [sortKey, setSortKey] = useState<SortKey>("profitPct");
   const [dir, setDir] = useState<SortDir>("desc");
   const [username, setUsername] = useState("");
@@ -49,29 +51,29 @@ export function Ranking() {
 
   return (
     <div>
-        <h2 className="text-xl font-bold">How the Rank button works</h2>
+        <h2 className="text-xl font-bold">{t("How the Rank button works")}</h2>
         <ol className="mt-5 grid border-l border-t border-border md:grid-cols-3">
           {HOW.map(({ icon: Icon, title, text }, i) => (
-            <li key={title} className="border-b border-r border-border p-6">
+            <li key={t(title ?? "")} className="border-b border-r border-border p-6">
               <div className="flex items-center justify-between">
                 <Icon className="h-5 w-5 text-primary" />
                 <span className="font-mono text-xs text-muted-foreground">{String(i + 1).padStart(2, "0")}</span>
               </div>
-              <h3 className="mt-5 font-bold">{title}</h3>
-              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{text}</p>
+              <h3 className="mt-5 font-bold">{t(title ?? "")}</h3>
+              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{t(text ?? "")}</p>
             </li>
           ))}
         </ol>
 
         <div className="mt-14 flex items-baseline justify-between gap-4">
-          <h2 className="text-xl font-bold">This week's leaderboard</h2>
-          <span className="font-mono text-xs text-muted-foreground">Sample data · click a column to sort</span>
+          <h2 className="text-xl font-bold">{t("This week's leaderboard")}</h2>
+          <span className="font-mono text-xs text-muted-foreground">{t("Sample data · click a column to sort")}</span>
         </div>
 
         <div className="mt-5 grid gap-6 lg:grid-cols-[1.6fr_1fr]">
           <div className="overflow-x-auto rounded-lg border border-border">
             <table className="w-full min-w-[560px] text-sm">
-              <caption className="sr-only">Leaderboard, sortable by column</caption>
+              <caption className="sr-only">{t("Leaderboard, sortable by column")}</caption>
               <thead className="bg-surface font-mono text-xs uppercase tracking-wider text-muted-foreground">
                 <tr>
                   <th className="px-4 py-3 text-left font-medium">#</th>
@@ -89,7 +91,7 @@ export function Ranking() {
                           onClick={() => toggle(c.key)}
                           className={`inline-flex cursor-pointer items-center gap-1 uppercase transition-colors hover:text-foreground ${active ? "text-primary" : ""}`}
                         >
-                          {c.label}
+                          {t(c.label ?? "")}
                           <Icon className="h-3 w-3" />
                         </button>
                       </th>
@@ -108,7 +110,7 @@ export function Ranking() {
                         c.key === "profitPct" ? "text-signal" : c.key === "maxDrawdown" ? "text-loss" : "text-foreground";
                       return (
                         <td key={c.key} className={`px-4 py-3 ${c.numeric ? "text-right" : "text-left font-sans font-medium"} ${tone}`}>
-                          {text}
+                          {t(text ?? "")}
                         </td>
                       );
                     })}
@@ -119,11 +121,9 @@ export function Ranking() {
           </div>
 
           <form onSubmit={lookup} className="flex h-fit flex-col rounded-lg border border-border bg-card p-6">
-            <h3 className="text-lg font-semibold">Look up a trader</h3>
-            <p className="mt-1.5 text-sm text-muted-foreground">Opens the trader's ranking page in a new tab.</p>
-            <label htmlFor="rank-username" className="mt-6 font-mono text-xs uppercase tracking-wider text-muted-foreground">
-              Username
-            </label>
+            <h3 className="text-lg font-semibold">{t("Look up a trader")}</h3>
+            <p className="mt-1.5 text-sm text-muted-foreground">{t("Opens the trader's ranking page in a new tab.")}</p>
+            <label htmlFor="rank-username" className="mt-6 font-mono text-xs uppercase tracking-wider text-muted-foreground">{t("Username")}</label>
             <Input
               id="rank-username"
               value={username}
@@ -137,8 +137,7 @@ export function Ranking() {
               <span className="text-primary">{username.trim() || "username"}</span>
             </p>
             <Button type="submit" variant="hero" size="lg" className="mt-6" disabled={!username.trim()}>
-              <ExternalLink /> Open ranking
-            </Button>
+              <ExternalLink />{t("Open ranking")}</Button>
           </form>
         </div>
     </div>
